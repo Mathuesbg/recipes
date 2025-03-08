@@ -1,16 +1,13 @@
 {% include "core/partials/head.html" %}
-<body>
-    <header class="main-header-container">
-        <div class="main-header container">
-            <h1>
-                <a href="/">
-                    <i class="fas fa-address-book"></i>
-                    <span>Recipes {{ name }}</span>
-                </a>
-            </h1>
-        </div>
+    <body>
+        {% include "core/partials/header.html" %}
+        {% include "core/partials/search.html" %}
+        <main class="main-content-container">
+            <div class="main-content main-content-list container">
+            {% include "core/partials/recipe.html" %}
 
-    </header>
-</body>
-
+            </div>
+        </main>
+        {% include "core/partials/footer.html" %}
+    </body>
 </html>
