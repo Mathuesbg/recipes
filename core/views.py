@@ -4,3 +4,5 @@ from django.shortcuts import render
 def home(request):
     return render(request, 'core/pages/home.html', context={"name": "matheus"})
 
+def recipe(request, id):
+        return render(request, 'core/pages/recipe-view.html', context={"name": "matheus"})
