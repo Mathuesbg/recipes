@@ -13,12 +13,7 @@ def home(request):
         )
 
 def recipe(request, id):
-        recipe = get_object_or_404(
-            models.Recipe.objects.filter(
-                pk=id, 
-                is_published=True
-                )
-            )
+        recipe = get_object_or_404(models.Recipe, pk=id, is_published=True)
 
         return render(
              
