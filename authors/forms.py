@@ -37,26 +37,59 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['password'], 'type your password ')
         add_placeholder(self.fields['password2'], 'confirm your password')
 
-    password = forms.CharField(
-        required=True,
-        widget= forms.PasswordInput(),
+
+    username = forms.CharField(
         error_messages = {
-            'required' : 'Password can`t be empty'
-        },
+            'required' : "This field must not be empty",
+            'min_length' : "Username must have at least 4 characters",
+            'max_length' : "Username must have less than 150 characters"
+            },
+        label = 'Username',
+        min_length=4,
+        max_length=150,
+
         help_text= (
+            'Username must have letters,'
+            ' number or one of those "@ . + - _ "'
+            'the length shoud be between 4 and 150 characters'
+        )
+    )
+
+    first_name = forms.CharField(
+        error_messages={'required' : 'Write your first name'},
+        label= 'First name'
+    )
+
+    email = forms.EmailField(
+        error_messages= {'required' : 'Write your email'},
+        label= 'E-mail',
+        help_text = 'The e-mail must be valid'
+    )
+
+    last_name = forms.CharField(
+        error_messages = {'required' : 'Write your last name'},
+        label = 'Last name'
+    )
+
+
+    password = forms.CharField(
+        widget = forms.PasswordInput(),
+        error_messages = {'required' : 'Password can`t be empty'}, 
+        validators = [strong_password],
+        label = "Password",
+        help_text = (
             'password must have at least one uppercase letter, '
             'One lowercase letter and one number. The length should be'
             'at least 8 letters.'
         ),
-        validators=[strong_password],
-        label= "Password"
     )
 
     password2 = forms.CharField(
-        required=True,
         widget= forms.PasswordInput(),
-        label= 'Password Confirmation'
+        label= 'Password Confirmation',
+        error_messages = {'required' : 'Please repeat your password'}
     )
+    
     class Meta:
         model = User
         fields = [
@@ -67,22 +100,6 @@ class RegisterForm(forms.ModelForm):
             'password',
         ]
 
-        labels = {
-            'first_name' : "First name",
-            'username' : "Username",
-            'last_name' : "Last name",
-            'email' : "E-mail", 
-        }
-
-        help_texts = {
-            'email' : 'The e-mail must be valid'
-        }
-
-        error_messages = { 
-            "username": {
-                "required" : 'This field must not be empty',
-            }
-        }
     
     def clean(self):
         cleaned_data = super().clean()
@@ -92,5 +109,4 @@ class RegisterForm(forms.ModelForm):
         if password != password2:
             raise ValidationError(
                 {'password2' : 'passwords must be equal!'}
-                
             )
