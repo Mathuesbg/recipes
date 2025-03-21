@@ -145,3 +145,18 @@ class AuthorRegisterFormIntegration(DjangoTestCase):
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, 404)
+
+
+    def test_email_field_must_be_unique(self):
+        
+        url = reverse('authors:create')
+        
+        response1 = self.client.post(url, data=self.form_data, follow=True)
+        self.assertIn("Author registered successfully!", response1.content.decode('utf-8'))
+
+        response2 = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'This email is already registered'
+
+        self.assertIn(msg, response2.context['form'].errors['email'])
+        self.assertIn( msg, response2.content.decode('utf-8'))
+

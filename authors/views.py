@@ -13,7 +13,6 @@ def register_author(request):
 
 def register_create(request):
     
-
     if not request.POST:
         raise Http404  
 
@@ -22,7 +21,10 @@ def register_create(request):
     form = RegisterForm(POST)
     
     if form.is_valid():
-        form.save()
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        
+        user = form.save()
         messages.success(request, 'Author registered successfully!')
         del(request.session['register_form_data'])
 
