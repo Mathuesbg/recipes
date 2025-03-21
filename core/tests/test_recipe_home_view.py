@@ -46,10 +46,10 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertEqual(len(response_context), 0)
 
 
-    @patch("core.views.PER_PAGE", new=9)
+    @patch("core.views.PER_PAGE", new=2)
     def test_recipe_home_is_paginated(self):
 
-        for i in range(18):
+        for i in range(3):
             kwargs = {
                 "author_data" : {"username" : f'u{i}'},
                 "slug" : f"r{i}",
@@ -62,4 +62,4 @@ class RecipeHomeViewTest(RecipeTestBase):
        
 
         self.assertEqual(paginator.num_pages, 2)
-        self.assertEqual(len(paginator.get_page(1)), 9)
+        self.assertEqual(len(paginator.get_page(1)), 2)

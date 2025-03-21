@@ -1,4 +1,4 @@
-from django.test import TestCase
+from unittest import TestCase
 from authors.forms import RegisterForm
 from parameterized import parameterized
 
@@ -34,7 +34,7 @@ class AuthorRegisterFormUnitTest(TestCase):
     def test_fields_help_text_is_correct(self, field, help_text):
         form = RegisterForm()
         current = form[field].field.help_text
-        print("oi")
+        
         self.assertEqual(help_text, current)
 
 
@@ -51,5 +51,5 @@ class AuthorRegisterFormUnitTest(TestCase):
     def test_fields_label_is_correct(self, field, label_val):
         form = RegisterForm()
         current = form[field].field.label
-        print("oi")
+        
         self.assertEqual(label_val, current)
