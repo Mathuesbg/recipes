@@ -356,6 +356,26 @@ h6 {
     font-size: 1.5rem;
 
 }
+
+.inline-form {
+    display: inline;
+    font-size: 1.6rem;
+}
+
+.plaintext-button {
+    display: inline;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: 900;
+    font-size: 1.6rem;
+
+}
+
+.plaintext-button:hover {
+    color: var(--color-primary-hover);
+}
 /* ENDFORMS */
 
 /* MESSAGES */
