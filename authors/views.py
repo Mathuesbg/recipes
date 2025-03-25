@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from authors.forms import RegisterForm
 from django.http import Http404
 from django.contrib import messages
@@ -8,7 +9,11 @@ def register_author(request):
     register_form_data = request.session.get("register_form_data", None)
     form = RegisterForm(register_form_data)
 
-    return render(request, 'authors/pages/register.html', {'form': form})
+    return render(
+        request=request, 
+        template_name='authors/pages/register.html', 
+        context={'form': form, 'form_action':  reverse("authors:create") }
+    )
 
 
 def register_create(request):
