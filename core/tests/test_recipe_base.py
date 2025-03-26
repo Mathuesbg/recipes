@@ -2,15 +2,10 @@ from django.test import TestCase
 from core.models import Recipe, Category, User
 
 
+class RecipeMixin:
 
-class RecipeTestBase(TestCase):
-
-    def setUp(self):
-            return super().setUp()
-    
     def make_category(self, name="Categoria"):
         return Category.objects.create(name=name)
-    
 
     def make_author(
         self,
@@ -64,3 +59,13 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html = preparation_steps_is_html,
             is_published = is_published,
             )
+
+
+class RecipeTestBase(TestCase, RecipeMixin):
+
+    def setUp(self):
+        return super().setUp()
+    
+    
+
+    
