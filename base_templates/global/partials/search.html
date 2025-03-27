@@ -1,7 +1,7 @@
 <div class="search-container">
     <div class="container">
        <form action="{% url 'recipe:search' %}" class="search-form">
-            <input class="search-input" name="q" type="search" value="{{search_term}}" required>
+            <input placeholder="Search for a recipe" class="search-input" name="q" type="search" value="{{search_term}}" required>
             <button class="search-button" type="submit">
                 <i class="fas fa-search"></i>
             </button>

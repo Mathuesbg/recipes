@@ -46,39 +46,32 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertEqual(len(response_context), 0)
 
 
-    @patch("core.views.PER_PAGE", new=2)
+    @patch("core.views.PER_PAGE", new=1)
     def test_recipe_home_is_paginated(self):
 
-        for i in range(3):
-            kwargs = {
-                "author_data" : {"username" : f'u{i}'},
-                "slug" : f"r{i}",
-            }
-            self.make_recipe(**kwargs)
+        self.make_recipe_in_batch(2)
 
         response = self.client.get(reverse('recipe:home'))
         recipes = response.context.get("recipes")
         paginator = recipes.paginator
        
-
+        ...
         self.assertEqual(paginator.num_pages, 2)
-        self.assertEqual(len(paginator.get_page(1)), 2)
+        self.assertEqual(len(paginator.get_page(1)), 1)
 
 
-    @patch("core.views.PER_PAGE", new=2)
-    def test_invalid_page_query_uses_page_1(self):
-        for i in range(3):
-            kwargs = {
-                "author_data" : {"username" : f'u{i}'},
-                "slug" : f"r{i}",
-            }
-            self.make_recipe(**kwargs)
+    def test_invalid_page_query_uses_page_one(self):
 
+        self.make_recipe_in_batch(qtd=2)
 
-        response = self.client.get(reverse('recipe:home') + "?page=1a")
-
-        self.assertEqual(response.context.get("recipes").number, 1)
-
-        response = self.client.get(reverse('recipe:home') + "?page=2a")
-
-        self.assertEqual(response.context.get("recipes").number, 1)
+        with patch('core.views.PER_PAGE', new=1):
+            response = self.client.get(reverse('recipe:home') + '?page=12A')
+            self.assertEqual(
+                response.context['recipes'].number,
+                1
+            )
+            response = self.client.get(reverse('recipe:home') + '?page=2')
+            self.assertEqual(
+                response.context['recipes'].number,
+                2
+            )
