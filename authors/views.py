@@ -73,7 +73,7 @@ def login_create(request):
                 message="User Logged in!"
                 )
             
-            return redirect("recipe:home")
+            return redirect("authors:login")
         
         messages.error(
             request=request,
