@@ -29,3 +29,47 @@ class AuthorsLoginTest(AuthorsBaseTest):
             f'You are logged in with "{user.username}".', 
             self.browser.find_element(By.TAG_NAME, "body").text
             )
+
+
+    def test_login_create_raises_404_if_not_POST_method(self):
+        url = reverse("authors:login_create")
+        self.browser.get(self.live_server_url + url)
+
+        self.assertIn(
+            "Not Found",
+            self.browser.find_element(By.TAG_NAME, "body").text
+        )
+        
+
+    def teste_form_login_is_invalid(self):
+        self.browser.get(
+            self.live_server_url + reverse("authors:login")
+        )
+
+        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+
+        username = self.get_by_placeholder(form, 'Type your username here')
+        password = self.get_by_placeholder(form, 'Type your password here')
+
+        username.send_keys(' ')
+        password.send_keys(" ")
+
+        form.submit()
+        self.assertIn("Form error!", self.browser.find_element(By.TAG_NAME, "body").text)
+
+
+    def teste_form_login_is_invalid_credentials(self):
+        self.browser.get(
+            self.live_server_url + reverse("authors:login")
+        )
+
+        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+
+        username = self.get_by_placeholder(form, 'Type your username here')
+        password = self.get_by_placeholder(form, 'Type your password here')
+
+        username.send_keys('invald_user')
+        password.send_keys("invalid_@Bc12345")
+
+        form.submit()
+        self.assertIn("invalid credentials", self.browser.find_element(By.TAG_NAME, "body").text)
