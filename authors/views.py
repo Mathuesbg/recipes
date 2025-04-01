@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.decorators import login_required
 
-from authors.forms import RegisterForm, LoginForm
+from authors.forms import RegisterForm, LoginForm, AuthorRecipeForm
 from core.models import Recipe
 
 
@@ -120,5 +120,31 @@ def dashborad(request):
         template_name="authors/pages/dashboard.html",
         context= {
             "recipes": recipes
+        }
+    )
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashborad_recipe_edit(request,id):
+
+    recipe = Recipe.objects.filter(
+        is_published= False, 
+        author= request.user,
+        pk=id
+        ).first()
+    
+    form = AuthorRecipeForm(
+        data=request.POST or None,
+        instance=recipe
+    )
+    
+    if not recipe:
+        raise Http404()
+    
+    return render(
+        request=request,
+        template_name="authors/pages/dashboard_recipe.html",
+        context= {
+            "form" : form
         }
     )
