@@ -68,6 +68,23 @@ h6 {
     font-family: var(--font-headings);
 }
 
+img {
+    max-width: 100%;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.hard-bold {
+    font-weight: 900;
+}
+
+.hard-bold:hover {
+    color: var(--color-primary-hover);
+}
+
 .container {
     max-width: 144rem;
     margin: 0 auto;
