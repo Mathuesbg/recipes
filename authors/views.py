@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from authors.forms import RegisterForm, LoginForm
 from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.decorators import login_required
+
+from authors.forms import RegisterForm, LoginForm
+from core.models import Recipe
 
 
 def register_author(request):
@@ -57,6 +59,7 @@ def login_create(request):
         raise Http404  
     
     form = LoginForm(request.POST)
+    
 
     if form.is_valid():
         authenticated_user = authenticate(
@@ -73,20 +76,21 @@ def login_create(request):
                 message="User Logged in!"
                 )
             
-            return redirect("authors:login")
+            return redirect(reverse("authors:dashboard"))
+
         
         messages.error(
             request=request,
             message="invalid credentials"
             )
-        return redirect("authors:login")
+        return redirect(reverse("authors:dashboard"))
     
     messages.error(
         request=request,
         message="Form error!"
         )
     
-    return redirect("authors:login")
+    return redirect(reverse("authors:login"))
 
 @login_required(login_url='authors:login', redirect_field_name='next')
 def logout_view(request):
@@ -101,3 +105,20 @@ def logout_view(request):
     messages.success(request, "logout successfully!")
     logout(request=request)
     return redirect(reverse('authors:login'))
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashborad(request):
+
+    recipes = Recipe.objects.filter(
+        is_published = False, 
+        author = request.user
+        )
+    
+    return render(
+        request=request,
+        template_name="authors/pages/dashboard.html",
+        context= {
+            "recipes": recipes
+        }
+    )
