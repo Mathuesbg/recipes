@@ -108,7 +108,7 @@ def logout_view(request):
 
 
 @login_required(login_url='authors:login', redirect_field_name='next')
-def dashborad(request):
+def dashboard(request):
 
     recipes = Recipe.objects.filter(
         is_published = False, 
@@ -125,7 +125,7 @@ def dashborad(request):
 
 
 @login_required(login_url='authors:login', redirect_field_name='next')
-def dashborad_recipe_edit(request,id):
+def dashboard_recipe_edit(request,id):
 
     recipe = Recipe.objects.filter(
         is_published= False, 
@@ -164,8 +164,8 @@ def dashborad_recipe_edit(request,id):
         }
     )
 
-
-def dashborad_recipe_create(request):
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard_recipe_create(request):
 
     form = AuthorRecipeForm()
 
@@ -177,7 +177,6 @@ def dashborad_recipe_create(request):
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.author = request.user
-            recipe.slug = recipe.title.replace(' ', '-')
             recipe.preparation_steps_is_html = False
             recipe.is_published = False
             recipe.save()
@@ -198,3 +197,31 @@ def dashborad_recipe_create(request):
 
         }
     )
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard_recipe_delete(request):
+    
+
+    if not request.POST:
+        raise Http404()
+    
+    id = request.POST.get('id')
+
+    recipe = Recipe.objects.filter(
+        is_published= False, 
+        author= request.user,
+        pk=id
+        ).first()
+    
+    if not recipe:
+        raise Http404()
+
+    recipe.delete()
+    
+    messages.success(
+        request=request,
+        message="Recipe deleted successfully!"
+    )
+
+    return redirect(reverse("authors:dashboard"))
