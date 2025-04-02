@@ -113,7 +113,7 @@ def dashborad(request):
     recipes = Recipe.objects.filter(
         is_published = False, 
         author = request.user
-        )
+        ).order_by("-id")
     
     return render(
         request=request,
@@ -135,8 +135,23 @@ def dashborad_recipe_edit(request,id):
     
     form = AuthorRecipeForm(
         data=request.POST or None,
+        files=request.FILES or None,
         instance=recipe
     )
+
+    if form.is_valid():
+        recipe = form.save(commit=False)
+        recipe.author = request.user
+        recipe.preparation_steps_is_html = False
+        recipe.is_published = False
+        recipe.save()
+
+        messages.success(
+            request=request,
+            message="Recipe updated successfully!"
+        )
+
+        return redirect(reverse("authors:dashboard_recipe_edit", args=(id,)))
     
     if not recipe:
         raise Http404()
@@ -146,5 +161,40 @@ def dashborad_recipe_edit(request,id):
         template_name="authors/pages/dashboard_recipe.html",
         context= {
             "form" : form
+        }
+    )
+
+
+def dashborad_recipe_create(request):
+
+    form = AuthorRecipeForm()
+
+    if request.method == "POST":
+        form = AuthorRecipeForm(
+        data=request.POST or None,
+        files=request.FILES or None,
+    )
+        if form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.slug = recipe.title.replace(' ', '-')
+            recipe.preparation_steps_is_html = False
+            recipe.is_published = False
+            recipe.save()
+
+            messages.success(
+                request=request,
+                message="Recipe created successfully!"
+            )
+
+            return redirect(reverse("authors:dashboard_recipe_create"))
+    
+    return render(
+        request=request,
+        template_name="authors/pages/dashboard_recipe.html",
+        context= {
+            "form" : form,
+            "form_action" : reverse("authors:dashboard_recipe_create")
+
         }
     )

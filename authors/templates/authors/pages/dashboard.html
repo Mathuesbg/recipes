@@ -13,14 +13,15 @@
 
         <div class="authors-dashboard-container">
             <h3>Your recipes</h3>
+            <a href="{% url "authors:dashboard_recipe_create" %}">Create one!</a>
             <ul>
                 {% for recipe in recipes %}
                     <li>
-                        <a href="{% url "authors:dashboard_edit" recipe.id %}">{{ recipe.title }}</a>
+                        <a href="{% url "authors:dashboard_recipe_edit" recipe.id %}">{{ recipe.title }}</a>
                     </li>
                 {%empty%}
                     <li>
-                        <p> You don't have recipes, Create one!</p>
+                        <p> You don't have recipes, <a href="{% url "authors:dashboard_recipe_create" %}">Create one!</a></p>
                     </li>
                 {% endfor %}
             </ul>
